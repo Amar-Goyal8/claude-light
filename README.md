@@ -85,6 +85,14 @@ workflow lit the notch up as "waiting on you" for an hour while nothing was
 waiting on anybody. Yellow asks a person to get up and do something, so it is the
 one colour that must never be a guess.
 
+Two things and only two things turn the light yellow: a tool call this app is
+holding open (see *Answering from the island* below), and Claude Code's own
+permission prompt sitting in the terminal with numbered choices. Claude Code also
+sends a `Notification` about a minute after it stops to say nobody has typed
+anything yet — that one is deliberately ignored. It is not a question, it is a
+finished session whose user is reading the answer, and it used to leave every
+completed session yellow.
+
 The installer is idempotent, keeps every hook you already have, and writes a
 backup before it touches anything.
 

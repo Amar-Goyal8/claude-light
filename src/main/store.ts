@@ -54,14 +54,26 @@ interface Live {
 }
 
 /**
- * Claude Code's own wording for the two things a Notification means. Anything
- * else it might say is not a question and must not turn the light yellow.
+ * Whether a Notification is a question, or only a nudge.
+ *
+ * Claude Code sends a Notification for two very different things. One is a
+ * permission prompt sitting in the terminal with numbered choices, which is a
+ * question: nothing moves until a person picks one. The other fires about a
+ * minute after Claude stopped, saying nobody has typed anything yet — and that
+ * is not a question, it is the ordinary state of a finished session whose user
+ * is reading the answer. Treating it as one turned every completed session
+ * yellow a minute after it finished, and it stayed yellow, because a session
+ * that has stopped writes nothing more for `phaseOf` to notice.
+ *
+ * The match is on Claude Code's own wording for the permission prompt rather
+ * than on loose keywords. The message is free text that can quote a tool name
+ * or a command, so `includes('approve')` fired on notifications that were only
+ * talking about approving something.
  */
-function askFromNotification(message: string): { kind: 'permission' | 'idle' } | null {
+function isPermissionAsk(message: string): boolean {
   const m = message.toLowerCase();
-  if (m.includes('permission') || m.includes('approve') || m.includes('confirm')) return { kind: 'permission' };
-  if (m.includes('waiting for your input') || m.includes('is waiting')) return { kind: 'idle' };
-  return null;
+  // "Claude needs your permission to use Bash"
+  return /needs? your permission/.test(m) || /permission to (use|run)\b/.test(m);
 }
 
 /** One line describing what a tool call would do, for the approval card. */
@@ -158,17 +170,21 @@ export class Store extends EventEmitter {
         this.clearIfStale(s);
         break;
       case 'Notification': {
-        const kind = askFromNotification(e.message || '');
-        if (!kind) break;
+        if (!isPermissionAsk(e.message || '')) break;
+        // A permission prompt cannot appear after the turn ended — no tool runs
+        // without a prompt first, and that arrives as UserPromptSubmit. Out of
+        // order it is noise, and lighting a finished session yellow on noise is
+        // the mistake this whole path exists to avoid.
+        if (s.phase === 'done') break;
         s.phase = 'asking';
         // A held gate already put a better card on screen — do not overwrite a
         // question you can answer with one you cannot.
         if (s.ask?.answerable) break;
         s.ask = {
           id: 'note-' + s.id + '-' + s.lastHookAt,
-          tool: kind.kind === 'permission' ? 'permission' : 'input',
+          tool: 'permission',
           command: '',
-          message: e.message || 'Claude needs you',
+          message: e.message || 'Claude needs your permission',
           at: s.lastHookAt,
           answerable: false
         };
