@@ -1,0 +1,39 @@
+{
+  "name": "claude-light",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Claude Light \u2014 a dynamic island for Claude Code. A light on the left, a buddy on the right, nothing behind the lens.",
+  "main": "dist/main/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "start": "npm run build && electron .",
+    "demo": "npm run build && electron . --demo",
+    "gallery": "npm run build && electron . --gallery",
+    "service": "node bin/service.mjs install",
+    "service:restart": "node bin/service.mjs restart",
+    "service:status": "node bin/service.mjs status",
+    "service:logs": "node bin/service.mjs logs",
+    "service:uninstall": "node bin/service.mjs uninstall",
+    "install-hooks": "node bin/install-hooks.mjs",
+    "uninstall-hooks": "node bin/install-hooks.mjs --remove"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "electron": "^44.0.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "allowScripts": {
+    "electron@33.4.11": true,
+    "esbuild@0.28.2": true
+  }
+}

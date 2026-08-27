@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output — dist/ is produced by `npm run build`
+dist/
+*.tsbuildinfo
+
+# The compiled notch probe. The Swift source in native/ is committed; the
+# binary is built into ~/.claude-light/bin on first run, but keep stray local
+# builds out of the tree.
+native/notchprobe
+native/*.o
+native/*.dSYM/
+
+# Electron packaging
+out/
+release/
+*.app/
+*.dmg
+
+# Local runtime state lives in ~/.claude-light, never here.
+.claude-light/
+
+# Logs and scratch
+*.log
+npm-debug.log*
+.cache/
+tmp/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Secrets — nothing here should ever hold a token, so fail loudly if it does
+.env
+.env.*
+*.pem
+credentials.json

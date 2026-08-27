@@ -1,0 +1,115 @@
+/* The island's own sheet. Everything structural is inline in the components;
+   this file holds only what inline styles cannot express — keyframes, hover,
+   and the transparent stage the overlay draws on. */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/* The window is the width of the display and mostly empty. Nothing in it takes
+   the mouse except the island, which turns pointer events back on.
+
+   Absolute rather than fixed so the same component can be dropped into a mock
+   screen in the gallery without knowing it is not the real menu bar. */
+.cl-stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cl-anchor {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+}
+
+.cl-body {
+  position: relative;
+  background: #000;
+  overflow: hidden;
+  pointer-events: auto;
+  transition:
+    width 260ms cubic-bezier(0.2, 0.85, 0.2, 1),
+    height 260ms cubic-bezier(0.2, 0.85, 0.2, 1),
+    border-radius 180ms ease;
+}
+
+/* Measured, not laid out: the body's size follows this node rather than the
+   other way round, which is what lets the black shell animate between faces. */
+.cl-content {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+}
+
+.cl-fade {
+  animation: cl-fade 180ms ease both;
+}
+
+@keyframes cl-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cl-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+
+.cl-row {
+  border-radius: 13px;
+  transition: background 120ms ease;
+}
+
+.cl-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cl-click {
+  cursor: pointer;
+}
+
+.cl-btn {
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+  cursor: pointer;
+}
+
+.cl-back {
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+.cl-back:hover {
+  color: #f2ede7;
+}
